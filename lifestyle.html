@@ -51,30 +51,19 @@ const sections = [
   },
   {
     id: "bathroom",
-    meta: "5 min",
+    meta: "6 min",
     title: "Bathroom",
     description: "A brief sequence of practical care before sitting down for breath or meditation.",
     items: [
       {
-        id: "tongue-scraping",
-        title: "Tongue Scraping",
-        duration: "1 min",
+        id: "tongue-teeth",
+        title: "Tongue Scraping & Teeth",
+        duration: "3 min",
         content: {
-          description: "Draw the scraper lightly from the back of the tongue toward the tip 5–7 times, rinsing it after each pass.",
-          benefit: "Supports a fresh feeling in the mouth as the day begins.",
-          photo: "4:3 photo — scraper, sink, clean neutral styling",
+          description: "Draw the scraper lightly from the back of the tongue toward the tip 5–7 times, rinsing it after each pass. Follow with an unhurried brushing of the teeth, covering each surface before rinsing thoroughly.",
+          benefit: "Clears the tongue's coating and completes basic oral care, supporting a fresh feeling in the mouth as the day begins.",
+          photo: "4:3 photo — scraper and toothbrush, sink, clean neutral styling",
           video: "16:9 video — gentle technique demonstration",
-        },
-      },
-      {
-        id: "teeth",
-        title: "Teeth",
-        duration: "2 min",
-        content: {
-          description: "Brush unhurried, covering each surface, before rinsing thoroughly.",
-          benefit: "A small act of care that settles the body before sitting practice.",
-          photo: "4:3 photo — sink, natural light, tidy styling",
-          video: "16:9 video — brief technique note",
         },
       },
       {
@@ -86,6 +75,16 @@ const sections = [
           benefit: "Clears the nasal passage, supporting easier, fuller breath during pranayama.",
           photo: "4:3 photo — neti pot, sink, clean neutral styling",
           video: "16:9 video — guided nasal rinsing technique",
+        },
+      },
+      {
+        id: "warm-water",
+        title: "Glass of Warm Water",
+        duration: "1 min",
+        content: {
+          description: "To close the bathroom sequence, drink a glass of warm water slowly, without rushing, before sitting down to practice.",
+          benefit: "Supports gentle rehydration and digestion as the body transitions into the day.",
+          photo: "4:3 photo — glass of warm water, simple morning styling",
         },
       },
     ],
@@ -170,12 +169,14 @@ function ChecklistItem({ item, checked, expanded, onToggleCheck, onToggleExpand 
           <div className="border-2 border-dashed border-[#C9BC9C] rounded-lg h-40 flex items-center justify-center text-center text-sm text-[#8A7F63] px-4">
             {item.content.photo}
           </div>
-          <div className="border-2 border-dashed border-[#C9BC9C] rounded-lg h-40 flex flex-col items-center justify-center gap-3 text-center text-sm text-[#8A7F63] px-4">
-            <span className="w-12 h-12 rounded-full bg-[#16342C] text-white flex items-center justify-center">
-              <Icon type="play" size={20} />
-            </span>
-            {item.content.video}
-          </div>
+          {item.content.video && (
+            <div className="border-2 border-dashed border-[#C9BC9C] rounded-lg h-40 flex flex-col items-center justify-center gap-3 text-center text-sm text-[#8A7F63] px-4">
+              <span className="w-12 h-12 rounded-full bg-[#16342C] text-white flex items-center justify-center">
+                <Icon type="play" size={20} />
+              </span>
+              {item.content.video}
+            </div>
+          )}
         </div>
       )}
     </div>
