@@ -50,14 +50,15 @@ const sections = [
     ],
   },
   {
-    id: "bathroom",
+    id: "shatkarmas",
     meta: "6 min",
-    title: "Bathroom",
+    title: "Shatkarmas",
     description: "A brief sequence of practical care before sitting down for breath or meditation.",
     items: [
       {
         id: "tongue-teeth",
         title: "Tongue Scraping & Teeth",
+        sanskrit: "Jihva Dhauti",
         duration: "3 min",
         content: {
           description: "Draw the scraper lightly from the back of the tongue toward the tip 5–7 times, rinsing it after each pass. Follow with an unhurried brushing of the teeth, covering each surface before rinsing thoroughly.",
@@ -68,7 +69,8 @@ const sections = [
       },
       {
         id: "jala-neti",
-        title: "Jala Neti — Nasal Rinsing",
+        title: "Nasal Rinsing",
+        sanskrit: "Jala Neti",
         duration: "2 min",
         content: {
           description: "Using a neti pot with warm saline water, tilt the head and let the water pass gently through one nostril and out the other. Repeat on the opposite side.",
@@ -80,9 +82,10 @@ const sections = [
       {
         id: "warm-water",
         title: "Glass of Warm Water",
+        sanskrit: "Ushapan",
         duration: "1 min",
         content: {
-          description: "To close the bathroom sequence, drink a glass of warm water slowly, without rushing, before sitting down to practice.",
+          description: "To close the sequence, drink a glass of warm water slowly, without rushing, before sitting down to practice.",
           benefit: "Supports gentle rehydration and digestion as the body transitions into the day.",
           photo: "4:3 photo — glass of warm water, simple morning styling",
         },
@@ -122,6 +125,7 @@ const sections = [
 ];
 
 const allItemIds = sections.flatMap((s) => s.items.map((i) => i.id));
+const POINTS_PER_ITEM = 5;
 
 function loadProgress() {
   try {
@@ -150,7 +154,10 @@ function ChecklistItem({ item, checked, expanded, onToggleCheck, onToggleExpand 
           <Icon type="check" size={14} />
         </button>
         <div className="flex-1 min-w-[8rem]">
-          <div className="font-bold text-[#16342C] leading-tight">{item.title}</div>
+          <div className="font-bold text-[#16342C] leading-tight">
+            {item.title}
+            {item.sanskrit && <span className="italic font-normal text-[#5B6F63]"> — {item.sanskrit}</span>}
+          </div>
           <div className="text-sm text-gray-500">{item.duration}</div>
         </div>
         {item.tag && (
@@ -211,18 +218,16 @@ function App() {
   const [expandedIds, setExpandedIds] = useState(new Set());
   const [completed, setCompleted] = useState(initial.completed);
 
-  const allDone = allItemIds.every((id) => checkedIds.has(id));
+  const karmaPoints = checkedIds.size * POINTS_PER_ITEM;
 
   function toggleCheck(id) {
     setCheckedIds((prev) => {
       const next = new Set(prev);
       next.has(id) ? next.delete(id) : next.add(id);
-      const stillAllDone = allItemIds.every((i) => next.has(i));
-      const nextCompleted = stillAllDone ? completed : false;
-      if (!stillAllDone) setCompleted(false);
-      saveProgress(next, stillAllDone ? completed : false);
+      saveProgress(next, false);
       return next;
     });
+    setCompleted(false);
   }
 
   function toggleExpand(id) {
@@ -233,8 +238,8 @@ function App() {
     });
   }
 
-  function markCompleted() {
-    if (!allDone) return;
+  function confirmProgress() {
+    if (checkedIds.size === 0) return;
     setCompleted(true);
     saveProgress(checkedIds, true);
   }
@@ -270,22 +275,26 @@ function App() {
 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-2">
             <p className="text-sm text-[#8A7F63]">
-              {completed ? "Completed — saved for the current browser session." : "Completion is stored for the current browser session."}
+              {completed
+                ? `Confirmed — ${karmaPoints} karma points earned. Saved for the current browser session.`
+                : checkedIds.size > 0
+                ? `${checkedIds.size} of ${allItemIds.length} steps checked — confirm to bank ${karmaPoints} karma points.`
+                : "Completion is stored for the current browser session."}
             </p>
             <div className="flex gap-3">
               <a href="index.html" className="px-6 py-2.5 rounded-lg bg-[#16342C] text-white font-bold hover:bg-[#1F4A3F] transition-colors">
                 Back to Dashboard
               </a>
               <button
-                onClick={markCompleted}
-                disabled={!allDone}
+                onClick={confirmProgress}
+                disabled={checkedIds.size === 0}
                 className={`px-6 py-2.5 rounded-lg font-bold transition-colors ${
-                  allDone
+                  checkedIds.size > 0
                     ? "bg-[#F0D94E] text-[#16342C] hover:bg-[#E6CC2E] cursor-pointer"
                     : "bg-[#F1EAB9] text-[#B8AF7E] cursor-not-allowed"
                 }`}
               >
-                {completed ? "Completed ✓" : "Mark as completed"}
+                {completed ? `Confirmed ✓ · +${karmaPoints}` : checkedIds.size > 0 ? `Confirm · +${karmaPoints} karma points` : "Mark as completed"}
               </button>
             </div>
           </div>
